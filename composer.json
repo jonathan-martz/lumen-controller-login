@@ -1,0 +1,19 @@
+{
+    "name":"mkaaaaaaay/lumen-login-controller",
+    "description":"Php Lumen Login Controller",
+    "require":{
+        "php":"^7.0",
+        "laravel/lumen-framework": "^5.6.0"
+    },
+    "autoload": {
+        "classmap": ["Class/"]
+    },
+    "authors": [
+        {
+            "name": "Jonathan Martz",
+            "email": "composer@jmartz.de",
+            "homepage": "https://www.jmartz.de",
+            "role": "Developer"
+        }
+    ]
+}
