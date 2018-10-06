@@ -63,10 +63,6 @@
 							  'created_at' => time()
 						  ]);
 
-						// Extend Controller from CustomController
-						// Add custom controller as requirement
-						// create module for CustomController
-
 						$this->addResult('status', 'success');
 						$this->addResult('message', 'User authenticated.');
 						$this->addResult('token', $token);
