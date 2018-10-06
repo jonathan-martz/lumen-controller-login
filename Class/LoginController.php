@@ -24,7 +24,7 @@
 				'password' => 'required|min:8'
 			]);
 
-			$this->addResult('username',$request->input('username'));
+			$this->addRequest('username',$request->input('username'));
 
 			$user = DB::connection('mysql.read')
 					  ->table('users')
