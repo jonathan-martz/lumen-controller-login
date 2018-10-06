@@ -7,6 +7,11 @@
 	use \Illuminate\Support\Facades\DB;
 	use \Illuminate\Support\Facades\Hash;
 
+	/**
+	 * Class LoginController
+	 *
+	 * @package App\Http\Controllers
+	 */
 	class LoginController extends Controller
 	{
 		/**
@@ -18,6 +23,8 @@
 				'username' => 'required',
 				'password' => 'required|min:8'
 			]);
+
+			$this->addResult('username',$request->input('username'));
 
 			$user = DB::connection('mysql.read')
 					  ->table('users')
@@ -60,16 +67,11 @@
 						// Add custom controller as requirement
 						// create module for CustomController
 
-						return response()->json([
-							'result' => [
-								'status' => 'success',
-								'message' => 'User authenticated.',
-								'token' => $token
-							],
-							'request' => [
-								'username' => $request->input('username')
-							],
-						]);
+						$this->addResult('status', 'success');
+						$this->addResult('message', 'User authenticated.');
+						$this->addResult('token', $token);
+
+						return $this->getResponse();
 					}
 					else{
 						DB::connection('mysql.write')
@@ -81,21 +83,18 @@
 							  'created_at' => time()
 						  ]);
 
-						return response()->json([
-							'result' => [
-								'status' => 'warning',
-								'message' => 'User credentials wrong.'
-							]
-						]);
+						$this->addResult('status', 'warning');
+						$this->addResult('message', 'User credentials wrong.');
+
+						return $this->getResponse();
 					}
 				}
+				else{
+					$this->addResult('status', 'error');
+					$this->addResult('message', 'User doesnt exists.');
 
-				return response()->json([
-					'result' => [
-						'status' => 'error',
-						'message' => 'User doesnt exists.'
-					]
-				]);
+					return $this->getResponse();
+				}
 			}
 			else{
 				DB::connection('mysql.write')
@@ -107,12 +106,10 @@
 					  'created_at' => time()
 				  ]);
 
-				return response()->json([
-					'result' => [
-						'status' => 'error',
-						'message' => 'User login blocked.'
-					]
-				]);
+				$this->addResult('status', 'error');
+				$this->addResult('message', 'User login blocked.');
+
+				return $this->getResponse();
 			}
 		}
 	}
