@@ -6,29 +6,9 @@
 	use \Illuminate\Http\Request;
 	use \Illuminate\Support\Facades\DB;
 	use \Illuminate\Support\Facades\Hash;
-	use \Laravel\Lumen\Routing\Controller as BaseController;
 
-	class LoginController extends BaseController
+	class LoginController extends Controller
 	{
-
-		public $result =  [];
-		public $request =  [];
-
-		public function addResult(string $key, $value):void{
-			$this->result[$key] = $value;
-		}
-
-		public function addRequest(string $key, $value):void{
-			$this->result[$key] = $value;
-		}
-
-		public function getResponse(){
-			return response()->json([
-				'result' => $this->result,
-				'request' => $this->request
-			]);
-		}
-
 		/**
 		 * @param  Request  $request
 		 * @return Response
