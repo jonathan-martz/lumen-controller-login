@@ -7,11 +7,6 @@
 	use \Illuminate\Support\Facades\DB;
 	use \Illuminate\Support\Facades\Hash;
 
-	/**
-	 * Class LoginController
-	 *
-	 * @package App\Http\Controllers
-	 */
 	class LoginController extends Controller
 	{
 		/**
@@ -24,7 +19,7 @@
 				'password' => 'required|min:8'
 			]);
 
-			$this->addRequest('username',$request->input('username'));
+			$this->addResult('username',$request->input('username'));
 
 			$user = DB::connection('mysql.read')
 					  ->table('users')
@@ -37,7 +32,7 @@
 					  ->where('username', '=', $request->input('username'))
 					  ->where('username_hash', '=', sha1($request->input('username')))
 					  ->whereNotIn('status' , ['success'])
-					  ->where('created_at','<',time() - (60 * 60))
+					  ->where('created_at','>',time() - (60 * 60))
 					  ->count();
 
 			if($trys < 10){
@@ -66,6 +61,10 @@
 						$this->addResult('status', 'success');
 						$this->addResult('message', 'User authenticated.');
 						$this->addResult('token', $token);
+						$this->addResult('user', [ 'username' => $user->username,
+												   'email' => $user->email,
+												   'id'=> $user->id
+						]);
 
 						return $this->getResponse();
 					}
@@ -104,6 +103,7 @@
 
 				$this->addResult('status', 'error');
 				$this->addResult('message', 'User login blocked.');
+				$this->addResult('trys', $trys);
 
 				return $this->getResponse();
 			}
