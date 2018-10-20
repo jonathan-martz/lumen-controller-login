@@ -60,8 +60,8 @@
 
 						$this->addResult('status', 'success');
 						$this->addResult('message', 'User authenticated.');
-						$this->addResult('token', [
-							'key'=> $token,
+						$this->addResult('auth', [
+							'token'=> $token,
 							'expires'=> time() + (60 * 60 * 24 * 7)
 						]);
 						$this->addResult('user', [
