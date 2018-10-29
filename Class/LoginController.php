@@ -39,7 +39,7 @@
 				if($user !== NULL){
 					if (Hash::check($request->input('password'), $user->password))
 					{
-						$token = bin2hex(openssl_random_pseudo_bytes(512));
+						$token = bin2hex(openssl_random_pseudo_bytes(256));
 
 						DB::connection('mysql.write')
 						  ->table('login_try')
