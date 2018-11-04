@@ -7,7 +7,7 @@
         "mkaaaaaaay/lumen-controller": "^0.2"
     },
     "autoload": {
-        "classmap": ["Class/"]
+        "classmap": ["controller/"]
     },
     "authors": [
         {
