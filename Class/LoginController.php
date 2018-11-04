@@ -58,8 +58,8 @@
 							  'created_at' => time()
 						  ]);
 
-						$this->addResult('status', 'success');
-						$this->addResult('message', 'User authenticated.');
+						$this->addMessage('success','User authenticated.');
+
 						$this->addResult('auth', [
 							'token'=> $token,
 							'expires'=> time() + (60 * 60 * 24 * 7)
@@ -81,16 +81,13 @@
 							  'status' => 'failed',
 							  'created_at' => time()
 						  ]);
-
-						$this->addResult('status', 'warning');
-						$this->addResult('message', 'User credentials wrong.');
+						$this->addMessage('warning','User credentials wrong.');
 
 						return $this->getResponse();
 					}
 				}
 				else{
-					$this->addResult('status', 'error');
-					$this->addResult('message', 'User doesnt exists.');
+					$this->addMessage('error','User doesnt exists.');
 
 					return $this->getResponse();
 				}
@@ -105,8 +102,8 @@
 					  'created_at' => time()
 				  ]);
 
-				$this->addResult('status', 'error');
-				$this->addResult('message', 'User login blocked.');
+				$this->addMessage('error','User login blocked.');
+
 				$this->addResult('trys', $trys);
 
 				return $this->getResponse();
