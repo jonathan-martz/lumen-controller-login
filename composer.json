@@ -1,5 +1,5 @@
 {
-    "name":"mkaaaaaaay/lumen-login-controller",
+    "name":"jonathan-martz/lumen-login-controller",
     "description":"Php Lumen Login Controller",
     "require":{
         "php":"^7.1",
@@ -7,7 +7,7 @@
         "mkaaaaaaay/lumen-controller": "^0.2"
     },
     "autoload": {
-        "classmap": ["Class/"]
+        "classmap": ["controller/"]
     },
     "authors": [
         {
