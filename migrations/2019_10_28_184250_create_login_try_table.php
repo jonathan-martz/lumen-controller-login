@@ -18,7 +18,7 @@ class CreateLoginTryTable extends Migration
             $table->string('username');
             $table->string('username_hash');
             $table->string('status');
-            $table->timestamps();
+            $table->integer('created_at');
         });
     }
 
