@@ -1,12 +1,13 @@
 {
-    "name":"jonathan-martz/lumen-login-controller",
-    "description":"Php Lumen Login Controller",
+    "name": "jonathan-martz/lumen-login-controller",
+    "description": "Php Lumen Login Controller",
     "license": "MIT",
-    "require":{
-        "php":"^7.1|^7.2|^7.3|^7.4",
+    "require": {
+        "php": "^7.1|^7.2|^7.3|^7.4",
         "laravel/lumen-framework": "^5.6|^6.0",
         "jonathan-martz/lumen-controller": "^0.2",
-        "jonathan-martz/lumen-model-user": "^0.1"
+        "jonathan-martz/lumen-model-user": "^0.1",
+        "ext-openssl": "*"
     },
     "autoload": {
         "classmap": [
