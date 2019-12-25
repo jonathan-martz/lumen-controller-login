@@ -7,42 +7,47 @@ use \Illuminate\Http\Request;
 use \Illuminate\Support\Facades\DB;
 use \Illuminate\Support\Facades\Hash;
 
+/**
+ * Class LoginController
+ * @package App\Http\Controllers
+ */
 class LoginController extends Controller
 {
+
     /**
-     * @param  Request  $request
-     * @return Response
+     * @return mixed
+     * @todo move logic into own functions
      */
-    public function user(Request $request){
-        $validation = $this->validate($request, [
+    public function user(){
+        $validation = $this->validate($this->request, [
             'username' => 'required',
             'password' => 'required|min:8'
         ]);
 
-        $this->addResult('username',$request->input('username'));
+        $this->addResult('username',$this->request->input('username'));
 
         $user = DB::table('users')
-            ->where('username', '=', $request->input('username'))
-            ->where('username_hash', '=', sha1($request->input('username')))
+            ->where('username', '=', $this->request->input('username'))
+            ->where('username_hash', '=', sha1($this->request->input('username')))
             ->first();
 
         $trys = DB::table('login_try')
-            ->where('username', '=', $request->input('username'))
-            ->where('username_hash', '=', sha1($request->input('username')))
+            ->where('username', '=', $this->request->input('username'))
+            ->where('username_hash', '=', sha1($this->request->input('username')))
             ->whereNotIn('status' , ['success'])
             ->where('created_at','>',time() - (60 * 60))
             ->count();
 
         if($trys < 10){
             if($user !== NULL){
-                if (Hash::check($request->input('password'), $user->password))
+                if (Hash::check($this->request->input('password'), $user->password))
                 {
                     $token = bin2hex(openssl_random_pseudo_bytes(256));
 
                     DB::table('login_try')
                         ->insert([
-                            'username' => $request->input('username'),
-                            'username_hash' => sha1($request->input('username')),
+                            'username' => $this->request->input('username'),
+                            'username_hash' => sha1($this->request->input('username')),
                             'status' => 'success',
                             'created_at' => time()
                         ]);
@@ -71,8 +76,8 @@ class LoginController extends Controller
                 else{
                     DB::table('login_try')
                         ->insert([
-                            'username' => $request->input('username'),
-                            'username_hash' => sha1($request->input('username')),
+                            'username' => $this->request->input('username'),
+                            'username_hash' => sha1($this->request->input('username')),
                             'status' => 'failed',
                             'created_at' => time()
                         ]);
@@ -90,8 +95,8 @@ class LoginController extends Controller
         else{
             DB::table('login_try')
                 ->insert([
-                    'username' => $request->input('username'),
-                    'username_hash' => sha1($request->input('username')),
+                    'username' => $this->request->input('username'),
+                    'username_hash' => sha1($this->request->input('username')),
                     'status' => 'blocked',
                     'created_at' => time()
                 ]);
