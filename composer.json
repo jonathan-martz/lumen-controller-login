@@ -9,7 +9,10 @@
         "jonathan-martz/lumen-model-user": "^0.1"
     },
     "autoload": {
-        "classmap": ["controller/"]
+        "classmap": [
+            "controller/",
+            "provider/"
+        ]
     },
     "authors": [
         {
