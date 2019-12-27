@@ -40,12 +40,14 @@ class LoginController extends Controller
             ->where('created_at', '>', time() - (60 * 60))
             ->count();
 
+        $password = $user->password;
+
         $user = new User((array)$user);
 
-        if ($user->getActive() === 1) {
+        if ($user->getActive()) {
             if ($trys < 10) {
                 if ($user !== NULL) {
-                    if (Hash::check($this->request->input('password'), $user->password)) {
+                    if (Hash::check($this->request->input('password'), $password)) {
                         $token = bin2hex(openssl_random_pseudo_bytes(256));
 
                         DB::table('login_try')
@@ -74,8 +76,6 @@ class LoginController extends Controller
                             'email' => $user->email,
                             'id' => $user->id
                         ]);
-
-                        return $this->getResponse();
                     } else {
                         DB::table('login_try')
                             ->insert([
