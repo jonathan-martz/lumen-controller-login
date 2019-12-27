@@ -105,7 +105,10 @@ class LoginController extends Controller
                 return $this->getResponse();
             }
         } else {
-            $this->addMessage('error', 'User is not activated yet. Please check your Emails to activate it or Request a new Eamil.');
+            $this->addMessage('error', 'User is not activated yet. Please check your Emails to activate it or Request a new Email.');
+            return $this->getResponse();
         }
+
+        return false;
     }
 }
