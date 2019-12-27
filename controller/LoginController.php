@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -29,6 +30,7 @@ class LoginController extends Controller
         $user = DB::table('users')
             ->where('username', '=', $this->request->input('username'))
             ->where('username_hash', '=', sha1($this->request->input('username')))
+            ->get()
             ->first();
 
         $trys = DB::table('login_try')
@@ -38,7 +40,9 @@ class LoginController extends Controller
             ->where('created_at', '>', time() - (60 * 60))
             ->count();
 
-        if ($user->active === 1) {
+        $user = new User((array)$user);
+
+        if ($user->getActive() === 1) {
             if ($trys < 10) {
                 if ($user !== NULL) {
                     if (Hash::check($this->request->input('password'), $user->password)) {
@@ -81,13 +85,9 @@ class LoginController extends Controller
                                 'created_at' => time()
                             ]);
                         $this->addMessage('warning', 'User credentials wrong.');
-
-                        return $this->getResponse();
                     }
                 } else {
                     $this->addMessage('error', 'User doesnt exists.');
-
-                    return $this->getResponse();
                 }
             } else {
                 DB::table('login_try')
@@ -99,16 +99,12 @@ class LoginController extends Controller
                     ]);
 
                 $this->addMessage('error', 'User login blocked.');
-
                 $this->addResult('trys', $trys);
-
-                return $this->getResponse();
             }
         } else {
             $this->addMessage('error', 'User is not activated yet. Please check your Emails to activate it or Request a new Email.');
-            return $this->getResponse();
         }
 
-        return false;
+        return $this->getResponse();
     }
 }
