@@ -1,5 +1,5 @@
 {
-    "name": "jonathan-martz/lumen-login-controller",
+    "name": "jonathan-martz/lumen-controller-login",
     "description": "Php Lumen Login Controller",
     "license": "MIT",
     "require": {
