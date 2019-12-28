@@ -39,70 +39,73 @@ class LoginController extends Controller
             ->whereNotIn('status', ['success'])
             ->where('created_at', '>', time() - (60 * 60))
             ->count();
+        if ($user) {
+            $password = $user->password;
 
-        $password = $user->password;
+            $user = new User((array)$user);
 
-        $user = new User((array)$user);
+            if ($user->getActive()) {
+                if ($trys < 10) {
+                    if ($user !== NULL) {
+                        if (Hash::check($this->request->input('password'), $password)) {
+                            $token = bin2hex(openssl_random_pseudo_bytes(256));
 
-        if ($user->getActive()) {
-            if ($trys < 10) {
-                if ($user !== NULL) {
-                    if (Hash::check($this->request->input('password'), $password)) {
-                        $token = bin2hex(openssl_random_pseudo_bytes(256));
+                            DB::table('login_try')
+                                ->insert([
+                                    'username' => $this->request->input('username'),
+                                    'username_hash' => sha1($this->request->input('username')),
+                                    'status' => 'success',
+                                    'created_at' => time()
+                                ]);
 
-                        DB::table('login_try')
-                            ->insert([
-                                'username' => $this->request->input('username'),
-                                'username_hash' => sha1($this->request->input('username')),
-                                'status' => 'success',
-                                'created_at' => time()
-                            ]);
+                            DB::table('auth_tokens')
+                                ->insert([
+                                    'token' => $token,
+                                    'UID' => $user->id,
+                                    'created_at' => time()
+                                ]);
 
-                        DB::table('auth_tokens')
-                            ->insert([
+                            $this->addMessage('success', 'User authenticated.');
+
+                            $this->addResult('auth', [
                                 'token' => $token,
-                                'UID' => $user->id,
-                                'created_at' => time()
+                                'expires' => time() + (60 * 60 * 24 * 7)
                             ]);
-
-                        $this->addMessage('success', 'User authenticated.');
-
-                        $this->addResult('auth', [
-                            'token' => $token,
-                            'expires' => time() + (60 * 60 * 24 * 7)
-                        ]);
-                        $this->addResult('user', [
-                            'username' => $user->username,
-                            'email' => $user->email,
-                            'id' => $user->id
-                        ]);
+                            $this->addResult('user', [
+                                'username' => $user->username,
+                                'email' => $user->email,
+                                'id' => $user->id
+                            ]);
+                        } else {
+                            DB::table('login_try')
+                                ->insert([
+                                    'username' => $this->request->input('username'),
+                                    'username_hash' => sha1($this->request->input('username')),
+                                    'status' => 'failed',
+                                    'created_at' => time()
+                                ]);
+                            $this->addMessage('warning', 'User credentials wrong.');
+                        }
                     } else {
-                        DB::table('login_try')
-                            ->insert([
-                                'username' => $this->request->input('username'),
-                                'username_hash' => sha1($this->request->input('username')),
-                                'status' => 'failed',
-                                'created_at' => time()
-                            ]);
-                        $this->addMessage('warning', 'User credentials wrong.');
+                        $this->addMessage('error', 'User doesnt exists.');
                     }
                 } else {
-                    $this->addMessage('error', 'User doesnt exists.');
+                    DB::table('login_try')
+                        ->insert([
+                            'username' => $this->request->input('username'),
+                            'username_hash' => sha1($this->request->input('username')),
+                            'status' => 'blocked',
+                            'created_at' => time()
+                        ]);
+
+                    $this->addMessage('error', 'User login blocked.');
+                    $this->addResult('trys', $trys);
                 }
             } else {
-                DB::table('login_try')
-                    ->insert([
-                        'username' => $this->request->input('username'),
-                        'username_hash' => sha1($this->request->input('username')),
-                        'status' => 'blocked',
-                        'created_at' => time()
-                    ]);
-
-                $this->addMessage('error', 'User login blocked.');
-                $this->addResult('trys', $trys);
+                $this->addMessage('error', 'User is not activated yet. Please check your Emails to activate it or Request a new Email.');
             }
         } else {
-            $this->addMessage('error', 'User is not activated yet. Please check your Emails to activate it or Request a new Email.');
+            $this->addMessage('error', 'User doesnt exists.');
         }
 
         return $this->getResponse();
