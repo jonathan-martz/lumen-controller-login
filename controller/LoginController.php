@@ -61,7 +61,7 @@ class LoginController extends Controller
                             DB::table('auth_tokens')
                                 ->insert([
                                     'token' => $token,
-                                    'UID' => $user->id,
+                                    'UID' => $user->getAuthIdentifier(),
                                     'created_at' => time()
                                 ]);
 
@@ -71,10 +71,22 @@ class LoginController extends Controller
                                 'token' => $token,
                                 'expires' => time() + (60 * 60 * 24 * 7)
                             ]);
+
+                            $roles = DB::table('user_role')->where('id', '=', $user->getAuthIdentifier());
+
+                            if ($roles->count() === 1) {
+                                $role = $roles->first();
+                                $roleName = $role->name;
+                            }
+                            if (empty($roleName)) {
+                                $roleName = null;
+                            }
+
                             $this->addResult('user', [
-                                'username' => $user->username,
-                                'email' => $user->email,
-                                'id' => $user->id
+                                'username' => $user->getAttribute('username'),
+                                'email' => $user->getAttribute('email'),
+                                'id' => $user->getAuthIdentifier(),
+                                'role' => $roleName
                             ]);
                         } else {
                             DB::table('login_try')
