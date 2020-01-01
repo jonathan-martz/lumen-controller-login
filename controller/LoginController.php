@@ -72,21 +72,11 @@ class LoginController extends Controller
                                 'expires' => time() + (60 * 60 * 24 * 7)
                             ]);
 
-                            $roles = DB::table('user_role')->where('id', '=', $user->getAuthIdentifier());
-
-                            if ($roles->count() === 1) {
-                                $role = $roles->first();
-                                $roleName = $role->name;
-                            }
-                            if (empty($roleName)) {
-                                $roleName = null;
-                            }
-
                             $this->addResult('user', [
                                 'username' => $user->getAttribute('username'),
                                 'email' => $user->getAttribute('email'),
                                 'id' => $user->getAuthIdentifier(),
-                                'role' => $roleName
+                                'role' => strtolower($user->getRoleName())
                             ]);
                         } else {
                             DB::table('login_try')
