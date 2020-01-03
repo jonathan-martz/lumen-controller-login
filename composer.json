@@ -6,7 +6,7 @@
         "php": "^7.3|^7.4",
         "laravel/lumen-framework": "^6.3",
         "jonathan-martz/lumen-controller": "^0.3",
-        "jonathan-martz/lumen-model-user": "^0.1",
+        "jonathan-martz/lumen-model-user": "^0.2",
         "jonathan-martz/lumen-middelware-xss": "^0.1",
         "jonathan-martz/lumen-middelware-https": "^0.1",
         "ext-openssl": "*"
