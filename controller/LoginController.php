@@ -25,7 +25,7 @@ class LoginController extends Controller
             'password' => 'required|min:8'
         ]);
 
-        $this->addResult('username', $this->request->input('username'));
+        $this->addData('username', $this->request->input('username'));
 
         $user = DB::table('users')
             ->where('username', '=', $this->request->input('username'))
@@ -67,12 +67,12 @@ class LoginController extends Controller
 
                             $this->addMessage('success', 'User authenticated.');
 
-                            $this->addResult('auth', [
+                            $this->addData('auth', [
                                 'token' => $token,
                                 'expires' => time() + (60 * 60 * 24 * 7)
                             ]);
 
-                            $this->addResult('user', [
+                            $this->addData('user', [
                                 'username' => $user->getAttribute('username'),
                                 'email' => $user->getAttribute('email'),
                                 'id' => $user->getAuthIdentifier(),
@@ -101,7 +101,7 @@ class LoginController extends Controller
                         ]);
 
                     $this->addMessage('error', 'User login blocked.');
-                    $this->addResult('trys', $trys);
+                    $this->addData('trys', $trys);
                 }
             } else {
                 $this->addMessage('error', 'User is not activated yet. Please check your Emails to activate it or Request a new Email.');
